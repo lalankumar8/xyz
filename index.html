@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameStore | Play & Win</title>
+  <link rel="stylesheet" href="Style.CSS">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+</head>
+
+<body>
+
+<!-- Login Modal (Show First) -->
+<div class="modal show" id="loginModal">
+  <div class="modal-content login-modal">
+    <div class="login-header">
+      <span class="logo-icon">🎮</span>
+      <h2>Welcome to GameStore</h2>
+      <p>Sign in to play and save your scores!</p>
+    </div>
+    
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Enter your username" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+      </div>
+      
+<div class="form-group">
+        <label>Password (min 6 characters)</label>
+        <input type="password" id="password" placeholder="Enter your password" required minlength="6">
+      </div>
+      
+      <div id="loginError" class="error-message hidden">❌ Password must be at least 6 characters!</div>
+      
+      <button type="submit" class="glow-btn primary-btn full-width">
+        🚀 Sign In / Register
+      </button>
+    </form>
+    
+    <p class="login-note">Already have an account? Just sign in again!</p>
+  </div>
+</div>
+
+<!-- Navbar (Hidden until login) -->
+<header id="mainHeader" class="hidden">
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-icon">🎮</span>
+      <span class="logo-text">GameStore</span>
+    </div>
+
+    <ul class="nav-links">
+      <li class="active">Home</li>
+      <li>Games</li>
+      <li>Categories</li>
+      <li>Contact</li>
+    </ul>
+
+    <div class="nav-actions">
+      <span id="userDisplay" class="user-badge"></span>
+      <button id="logoutBtn" class="logout-btn" onclick="handleLogout()">Logout</button>
+      <button id="themeBtn" class="theme-btn" aria-label="Toggle Dark Mode">🌙</button>
+    </div>
+  </nav>
+</header>
+
+<!-- Hero with Game (Hidden until login) -->
+<section class="hero hidden" id="mainContent">
+  <div class="hero-content">
+    <h1 class="fade-in">🎮 Play The Best Games</h1>
+    <p class="fade-in">Experience next-gen gaming with our interactive challenge!</p>
+    
+    <div class="hero-buttons fade-in">
+      <button class="glow-btn primary-btn">Browse Games</button>
+      <button class="glow-btn secondary-btn" onclick="scrollToGame()">Play Now</button>
+    </div>
+  </div>
+</section>
+
+<!-- Interactive Game Section -->
+<section class="game-section hidden" id="playGame">
+  <div class="game-container">
+    <div class="game-header">
+      <h2>🎮 Mini Games</h2>
+      <p class="game-instructions">Select a game and play!</p>
+    </div>
+    
+    <!-- Game Selector -->
+    <div class="game-selector">
+      <button class="game-option active" onclick="selectGame('target')">🎯 Target Click</button>
+      <button class="game-option" onclick="selectGame('catch')">🍎 Catch Fall</button>
+      <button class="game-option" onclick="selectGame('memory')">🧠 Memory</button>
+    </div>
+
+    <div class="game-stats">
+      <div class="stat-box">
+        <span class="stat-label">Score</span>
+        <span class="stat-value" id="score">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Time</span>
+        <span class="stat-value" id="timer">30</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">High Score</span>
+        <span class="stat-value" id="highScore">0</span>
+      </div>
+    </div>
+
+    <!-- Game Area - Target Game -->
+    <div class="game-area" id="gameArea">
+      <div class="target" id="target" onclick="hitTarget()"></div>
+    </div>
+    
+    <!-- Game Area - Catch Game -->
+    <div class="game-area hidden" id="catchArea">
+      <div class="basket" id="basket"></div>
+      <div class="falling" id="fallingItem"></div>
+    </div>
+    
+    <!-- Game Area - Memory Game -->
+    <div class="game-area hidden" id="memoryArea">
+      <div class="memory-grid" id="memoryGrid"></div>
+    </div>
+
+    <div class="game-controls">
+      <button class="glow-btn primary-btn" id="startBtn" onclick="startGame()">▶ Start Game</button>
+      <button class="glow-btn secondary-btn" onclick="resetGame()">↻ Reset</button>
+    </div>
+  </div>
+</section>
+
+<!-- Games Catalog -->
+<section class="games hidden" id="gamesSection">
+  <h2>🔥 Popular Games</h2>
+
+  <div class="game-grid">
+
+    <div class="card">
+      <div class="card-image">
+        <img src="https://picsum.photos/seed/game1/300/200" alt="Cyber Game">
+        <div class="card-badge">NEW</div>
+      </div>
+      <div class="card-content">
+        <h3>Cyber Odyssey</h3>
+        <p class="card-desc">Epic sci-fi adventure awaits</p>
+        <div class="card-footer">
+          <span class="price">$49</span>
+          <button class="buy-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-image">
+        <img src="https://picsum.photos/seed/game2/300/200" alt="Racing Game">
+        <div class="card-badge hot">HOT</div>
+      </div>
+      <div class="card-content">
+        <h3>Nitro Racing</h3>
+        <p class="card-desc">High-speed thrill ride</p>
+        <div class="card-footer">
+          <span class="price">$29</span>
+          <button class="buy-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-image">
+        <img src="https://picsum.photos/seed/game3/300/200" alt="War Game">
+      </div>
+      <div class="card-content">
+        <h3>War Zone Elite</h3>
+        <p class="card-desc">Tactical combat masterpiece</p>
+        <div class="card-footer">
+          <span class="price">$59</span>
+          <button class="buy-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-image">
+        <img src="https://picsum.photos/seed/game4/300/200" alt="Fantasy Game">
+        <div class="card-badge">RPG</div>
+      </div>
+      <div class="card-content">
+        <h3>Fantasy Realms</h3>
+        <p class="card-desc">Unlimited magic & adventure</p>
+        <div class="card-footer">
+          <span class="price">$39</span>
+          <button class="buy-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="hidden" id="mainFooter">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <span class="logo-icon">🎮</span>
+      <span>GameStore</span>
+    </div>
+    <p>© 2026 GameStore. All rights reserved. Made with ❤️ for gamers.</p>
+  </div>
+</footer>
+
+<!-- Game Over Modal -->
+<div class="modal" id="gameOverModal">
+  <div class="modal-content">
+    <h2>🏆 Game Over!</h2>
+    <div class="modal-stats">
+      <p>Your Score: <span id="finalScore">0</span></p>
+      <p id="newHighScore" class="hidden">🎉 NEW HIGH SCORE! 🎉</p>
+    </div>
+    <button class="glow-btn primary-btn" onclick="playAgain()">Play Again</button>
+    <button class="glow-btn secondary-btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  // User Data
+  let currentUser = null;
+  
+  // Check if user is already logged in
+  function checkLoginStatus() {
+    const savedUser = localStorage.getItem('gameStoreUser');
+    if (savedUser) {
+      currentUser = JSON.parse(savedUser);
+      showMainContent();
+    }
+  }
+  
+// Handle Login
+  function handleLogin(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const loginError = document.getElementById('loginError');
+    
+    // Validate password length
+    if (password.length < 6) {
+      loginError.classList.remove('hidden');
+      return;
+    }
+    
+    // Hide error if password is valid
+    loginError.classList.add('hidden');
+    
+    // Create or update user object
+    currentUser = {
+      username: username,
+      email: email,
+      password: password,
+      highScore: localStorage.getItem('gameHighScore') || 0,
+      createdAt: new Date().toISOString()
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('gameStoreUser', JSON.stringify(currentUser));
+    
+    // Show main content
+    showMainContent();
+  }
+  
+  // Show Main Content after login
+  function showMainContent() {
+    document.getElementById('loginModal').classList.remove('show');
+    document.getElementById('mainHeader').classList.remove('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+    document.getElementById('playGame').classList.remove('hidden');
+    document.getElementById('gamesSection').classList.remove('hidden');
+    document.getElementById('mainFooter').classList.remove('hidden');
+    
+    // Show user badge
+    document.getElementById('userDisplay').textContent = '👤 ' + currentUser.username;
+    
+    // Load high score for this user
+    const userHighScore = localStorage.getItem('gameHighScore') || 0;
+    document.getElementById('highScore').textContent = userHighScore;
+  }
+  
+  // Handle Logout
+  function handleLogout() {
+    // Keep user data but require re-login
+    document.getElementById('loginModal').classList.add('show');
+    document.getElementById('mainHeader').classList.add('hidden');
+    document.getElementById('mainContent').classList.add('hidden');
+    document.getElementById('playGame').classList.add('hidden');
+    document.getElementById('gamesSection').classList.add('hidden');
+    document.getElementById('mainFooter').classList.add('hidden');
+  }
+  
+  // Theme Toggle
+  const themeBtn = document.getElementById('themeBtn');
+  themeBtn.onclick = () => {
+    document.body.classList.toggle('light-mode');
+    themeBtn.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+  };
+
+  // Scroll to Game
+  function scrollToGame() {
+    document.getElementById('playGame').scrollIntoView({ behavior: 'smooth' });
+  }
+
+// Game Variables
+  let score = 0;
+  let timeLeft = 30;
+  let gameActive = false;
+  let timerInterval;
+  let highScore = localStorage.getItem('gameHighScore') || 0;
+  let currentGame = 'target';
+  let catchInterval;
+  let memoryCards = [];
+  let memoryFlipped = [];
+  let memoryMatched = 0;
+  
+  // Initialize
+  document.getElementById('highScore').textContent = highScore;
+  
+  // Game Selector
+  function selectGame(gameName) {
+    currentGame = gameName;
+    
+    // Update button styles
+    document.querySelectorAll('.game-option').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Hide all game areas
+    document.getElementById('gameArea').classList.add('hidden');
+    document.getElementById('catchArea').classList.add('hidden');
+    document.getElementById('memoryArea').classList.add('hidden');
+    
+    // Show selected game area
+    if (gameName === 'target') {
+      document.getElementById('gameArea').classList.remove('hidden');
+    } else if (gameName === 'catch') {
+      document.getElementById('catchArea').classList.remove('hidden');
+    } else if (gameName === 'memory') {
+      document.getElementById('memoryArea').classList.remove('hidden');
+      initMemoryGame();
+    }
+    
+    resetGame();
+  }
+  
+// Start Game
+  function startGame() {
+    if (gameActive) return;
+    
+    gameActive = true;
+    score = 0;
+    timeLeft = 30;
+    
+    document.getElementById('score').textContent = score;
+    document.getElementById('timer').textContent = timeLeft;
+    document.getElementById('startBtn').textContent = '⏸ Playing...';
+    document.getElementById('startBtn').disabled = true;
+    
+    // Start game based on current game type
+    if (currentGame === 'target') {
+      moveTarget();
+    } else if (currentGame === 'catch') {
+      startCatchGame();
+    } else if (currentGame === 'memory') {
+      startMemoryGame();
+    }
+    
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer').textContent = timeLeft;
+      
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
+  }
+
+  // Move Target Randomly
+  function moveTarget() {
+    const gameArea = document.getElementById('gameArea');
+    const target = document.getElementById('target');
+    
+    const maxX = gameArea.clientWidth - 60;
+    const maxY = gameArea.clientHeight - 60;
+    
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+    
+    target.style.left = randomX + 'px';
+    target.style.top = randomY + 'px';
+    target.style.display = 'block';
+    
+    target.classList.add('pulse');
+  }
+
+// Hit Target
+  function hitTarget() {
+    if (!gameActive) return;
+    
+    score++;
+    document.getElementById('score').textContent = score;
+    
+    const target = document.getElementById('target');
+    target.style.transform = 'scale(1.5)';
+    target.style.background = '#00ff00';
+    
+    setTimeout(() => {
+      target.style.transform = 'scale(1)';
+      target.style.background = '#ff0055';
+      moveTarget();
+    }, 100);
+  }
+  
+  // ===== CATCH FALL GAME =====
+  let basketPos = 150;
+  let fallingPos = 0;
+  
+  function startCatchGame() {
+    const basket = document.getElementById('basket');
+    const falling = document.getElementById('fallingItem');
+    
+    basket.style.left = '150px';
+    basket.style.bottom = '20px';
+    basket.style.display = 'block';
+    
+    falling.style.display = 'none';
+    
+    catchInterval = setInterval(() => {
+      if (!gameActive) return;
+      
+      // Move basket with arrow keys
+      document.onkeydown = (e) => {
+        if (e.key === 'ArrowLeft' && basketPos > 20) {
+          basketPos -= 20;
+        } else if (e.key === 'ArrowRight' && basketPos < 280) {
+          basketPos += 20;
+        }
+        basket.style.left = basketPos + 'px';
+      };
+      
+      // Drop new item randomly
+      if (falling.style.display === 'none') {
+        fallingPos = 0;
+        falling.style.left = (Math.random() * 280 + 20) + 'px';
+        falling.style.top = '0px';
+        falling.style.display = 'block';
+        falling.textContent = '🍎';
+      }
+      
+      // Move falling item down
+      fallingPos += 8;
+      falling.style.top = fallingPos + 'px';
+      
+      // Check collision
+      const basketRect = basket.getBoundingClientRect();
+      const fallingRect = falling.getBoundingClientRect();
+      
+      if (fallingRect.bottom >= basketRect.top && 
+          fallingRect.top <= basketRect.bottom &&
+          fallingRect.right >= basketRect.left &&
+          fallingRect.left <= basketRect.right) {
+        score++;
+        document.getElementById('score').textContent = score;
+        falling.style.display = 'none';
+      }
+      
+      // Missed - hit ground
+      if (fallingPos > 350) {
+        falling.style.display = 'none';
+      }
+}, 50);
+  }
+  
+  // ===== MEMORY GAME =====
+  const memoryEmojis = ['🎮', '🎯', '🔥', '⭐', '💎', '🎵'];
+  
+  function initMemoryGame() {
+    const grid = document.getElementById('memoryGrid');
+    grid.innerHTML = '';
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    grid.style.gap = '10px';
+    grid.style.padding = '10px';
+    
+    // Create pairs and shuffle
+    let cards = [...memoryEmojis, ...memoryEmojis];
+    cards.sort(() => Math.random() - 0.5);
+    
+    memoryCards = cards;
+    memoryFlipped = [];
+    memoryMatched = 0;
+    
+    cards.forEach((emoji, index) => {
+      const card = document.createElement('div');
+      card.className = 'memory-card';
+      card.dataset.index = index;
+      card.dataset.emoji = emoji;
+      card.style.cssText = 'height:80px;background:#1e293b;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:2rem;transition:0.3s;';
+      card.textContent = '?';
+      card.onclick = () => flipCard(card, index);
+      grid.appendChild(card);
+    });
+  }
+  
+  function flipCard(card, index) {
+    if (!gameActive || memoryFlipped.length >= 2 || card.textContent !== '?') return;
+    if (memoryFlipped.includes(index)) return;
+    
+    card.textContent = memoryCards[index];
+    card.style.background = '#6366f1';
+    memoryFlipped.push(index);
+    
+    if (memoryFlipped.length === 2) {
+      setTimeout(checkMatch, 500);
+    }
+  }
+  
+  function checkMatch() {
+    const [idx1, idx2] = memoryFlipped;
+    const card1 = document.querySelectorAll('.memory-card')[idx1];
+    const card2 = document.querySelectorAll('.memory-card')[idx2];
+    
+    if (memoryCards[idx1] === memoryCards[idx2]) {
+      card1.style.background = '#10b981';
+      card2.style.background = '#10b981';
+      memoryMatched++;
+      score += 5;
+      document.getElementById('score').textContent = score;
+    } else {
+      card1.textContent = '?';
+      card1.style.background = '#1e293b';
+      card2.textContent = '?';
+      card2.style.background = '#1e293b';
+    }
+    
+    memoryFlipped = [];
+    
+    // Check win
+    if (memoryMatched === memoryEmojis.length) {
+      score += 20;
+      document.getElementById('score').textContent = score;
+    }
+  }
+  
+  function startMemoryGame() {
+    initMemoryGame();
+  }
+
+  // End Game
+  function endGame() {
+    clearInterval(timerInterval);
+    gameActive = false;
+    
+    document.getElementById('target').style.display = 'none';
+    document.getElementById('startBtn').textContent = '▶ Start Game';
+    document.getElementById('startBtn').disabled = false;
+    
+    // Check high score
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem('gameHighScore', highScore);
+      document.getElementById('highScore').textContent = highScore;
+      document.getElementById('newHighScore').classList.remove('hidden');
+    } else {
+      document.getElementById('newHighScore').classList.add('hidden');
+    }
+    
+    document.getElementById('finalScore').textContent = score;
+    document.getElementById('gameOverModal').classList.add('show');
+  }
+
+  // Reset Game
+  function resetGame() {
+    clearInterval(timerInterval);
+    gameActive = false;
+    score = 0;
+    timeLeft = 30;
+    
+    document.getElementById('score').textContent = '0';
+    document.getElementById('timer').textContent = '30';
+    document.getElementById('startBtn').textContent = '▶ Start Game';
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('target').style.display = 'none';
+  }
+
+  // Close Modal
+  function closeModal() {
+    document.getElementById('gameOverModal').classList.remove('show');
+  }
+
+  // Play Again
+  function playAgain() {
+    closeModal();
+    startGame();
+  }
+
+  // Close modal when clicking outside
+  document.getElementById('gameOverModal').onclick = function(e) {
+    if (e.target.id === 'gameOverModal') {
+      closeModal();
+    }
+  };
+  
+  // Check login status on page load
+  window.onload = checkLoginStatus;
+</script>
+
+</body>
+</html>
